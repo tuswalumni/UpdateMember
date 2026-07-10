@@ -85,8 +85,41 @@
     }
 
     lucide.createIcons();
-    window.addEventListener('load', () => {
-      Swal.fire({ title: '<div class="swal-title-custom text-xl font-bold">ประกาศเรื่องการปรับปรุงและโอนย้ายฐานข้อมูลสมาชิกสมาคม</div>', html: `<div class="text-sm space-y-3"><p>ทางสมาคมฯ กำลังดำเนินการยกระดับงานทะเบียน หากท่านตรวจสอบแล้วไม่พบข้อมูลสมาชิกของท่าน กรุณาติดต่อ "นายทะเบียนสมาคม"</p></div>`, icon: 'info', confirmButtonText: 'รับทราบ', confirmButtonColor: '#4f46e5' });
+    window.addEventListener('load', function() {
+      Swal.fire({
+        title: '<div class="swal-title-custom text-lg md:text-xl font-bold">ประกาศเรื่องการปรับปรุงและโอนย้ายฐานข้อมูลสมาชิกสมาคม</div>',
+        html: `
+          <div class="text-slate-700 text-sm md:text-base space-y-3 p-2">
+            <p><b>เรียน สมาชิกสมาคมทุกท่าน</b></p>
+            <p>ทางสมาคมฯ ขอแจ้งให้ทราบว่า ขณะนี้เรากำลังดำเนินการยกระดับงานทะเบียนและนำข้อมูลเข้าสู่ระบบฐานข้อมูลสมาชิกใหม่ เพื่อให้การบริหารจัดการข้อมูลเป็นไปอย่างมีประสิทธิภาพและเป็นปัจจุบันที่สุด</p>
+            <p>เนื่องจากในช่วงที่ผ่านมา งานทะเบียนมีความไม่ต่อเนื่องในบางช่วงเวลา ส่งผลให้ข้อมูลในระบบเดิมอาจมีความคลาดเคลื่อน หรือไม่ครบถ้วนสมบูรณ์ในบางส่วน ซึ่งอาจทำให้สมาชิกบางท่านไม่สามารถค้นหารายชื่อหรือตรวจสอบข้อมูลของตนเองได้ในขณะนี้</p>
+            <p class="bg-red-50 p-3 rounded-lg border-l-4 border-red-400 text-red-800">
+              ทางสมาคมฯ ต้องขออภัยในความไม่สะดวกที่เกิดขึ้น หากท่านตรวจสอบแล้วไม่พบข้อมูลสมาชิกของท่าน หรือข้อมูลไม่ถูกต้อง กรุณาติดต่อ "นายทะเบียนสมาคม" เพื่อดำเนินการตรวจสอบและแก้ไขข้อมูลให้ถูกต้องต่อไป
+            </p>
+            <div class="mt-4 pt-4 border-t border-slate-200">
+              <p>ขอแสดงความนับถือ</p>
+              <p class="font-bold text-indigo-700">นายสถาพร อิ่มเอม</p>
+              <p class="text-slate-500">นายทะเบียน</p>
+            </div>
+            <a href="https://www.facebook.com/tuswalumni/" target="_blank" class="inline-flex items-center justify-center gap-2 mt-4 bg-blue-600 text-white py-2 px-6 rounded-lg hover:bg-blue-700 transition no-underline font-semibold shadow-sm">
+              <i data-lucide="facebook" class="w-5 h-5"></i>
+              <span>ติดต่อ Facebook สมาคมฯ</span>
+            </a>
+          </div>
+        `,
+        icon: 'info',
+        width: '650px',
+        confirmButtonText: 'รับทราบ',
+        confirmButtonColor: '#4f46e5',
+        customClass: {
+          popup: 'rounded-[1.5rem]',
+          htmlContainer: 'text-left'
+        },
+        // ✅ สำคัญ: เรียก lucide.createIcons() หลังจาก Pop-up เปิด เพื่อให้ไอคอนทำงาน
+        didOpen: () => {
+          lucide.createIcons();
+        }
+      });
     });
 
     async function searchMember() {
