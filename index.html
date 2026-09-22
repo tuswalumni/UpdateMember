@@ -27,7 +27,7 @@
   <div class="main-content p-6">
     <div class="max-w-4xl mx-auto">
       <div class="text-center mb-10 pt-4">
-        <img src="https://i.ibb.co/vxYZTPhj/cropped-circle-image.png" class="w-28 h-28 mx-auto mb-5 rounded-full shadow-lg border-4 border-white" alt="Logo">
+        <img src="https://img2.pic.in.th/cropped_circle_image.png" class="w-28 h-28 mx-auto mb-5 rounded-full shadow-lg border-4 border-white" alt="Logo">
         <h1 class="text-2xl font-bold text-slate-800 mb-2">ระบบอัปเดตและยืนยันข้อมูลสมาชิกเก่า (ก่อนปี 2568)</h1>
         <h2 class="text-xl font-semibold text-indigo-600">สมาคมนักศึกษาเก่าสังคมสงเคราะห์ศาสตร์ มธ.</h2>
       </div>
@@ -278,9 +278,12 @@
           
           const formData = Object.fromEntries(new FormData(form));
           TUSW_API.call('processMemberMigration', formData).then(res => {
+            const emailNote = res.emailSent
+              ? 'ระบบได้ส่งอีเมลยืนยันไปยัง ' + form.email.value + ' แล้ว'
+              : '<span style="color:#dc2626; font-weight:bold;">⚠️ ไม่สามารถส่งอีเมลยืนยันได้ (ตรวจสอบว่ากรอกอีเมลถูกต้องหรือไม่) กรุณาแจ้งรหัสสมาชิกให้ทราบด้วยช่องทางอื่น</span>';
             Swal.fire({
                 title: 'สำเร็จ!', 
-                html: 'อัปเดตข้อมูลเรียบร้อยแล้ว<br>รหัสสมาชิกใหม่ของคุณคือ: <b style="color:#059669; font-size:1.2em">' + res.newMemberId + '</b><br><span style="font-size:0.9em; color:#666">ระบบได้ส่งอีเมลยืนยันไปยัง ' + form.email.value + ' แล้ว</span>', 
+                html: 'อัปเดตข้อมูลเรียบร้อยแล้ว<br>รหัสสมาชิกใหม่ของคุณคือ: <b style="color:#059669; font-size:1.2em">' + res.newMemberId + '</b><br><span style="font-size:0.9em; color:#666">' + emailNote + '</span>', 
                 icon: 'success'
             }).then(() => {
                form.reset();
