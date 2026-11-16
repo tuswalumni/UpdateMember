@@ -6,27 +6,6 @@
   <title>อัปเดตข้อมูลสมาชิกเก่า — สมาคมนักศึกษาเก่าสังคมสงเคราะห์ศาสตร์ มธ.</title>
   <link rel="icon" type="image/png" href="https://img2.pic.in.th/cropped_circle_image4abd3ce094449065.png">
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = { theme: { extend: {
-      colors: {
-        brand: { 50:'#fbf3f2', 100:'#f5e1df', 200:'#e9c2be', 600:'#9a2a2c', 700:'#7d1f22', 800:'#621719', 900:'#45100f' },
-        gold:  { 50:'#fbf6ea', 100:'#f6ecd6', 300:'#e2c27f', 400:'#d4a84b', 600:'#a97c22', 700:'#8a6418' },
-        paper:'#f6f3ee', line:'#e6dfd5', ink:'#221c18', muted:'#6e655d'
-      },
-      fontFamily: { sans: ['"IBM Plex Sans Thai"', 'Sarabun', 'sans-serif'] }
-    } } };
-  </script>
-  <style type="text/tailwindcss">
-    @layer components {
-      .input-field { @apply w-full rounded-lg border border-line bg-white px-3.5 py-2.5 text-ink placeholder:text-muted/50 outline-none transition focus:border-brand-600 focus:ring-4 focus:ring-brand-600/10; }
-      .label { @apply block text-sm font-medium text-ink mb-1.5; }
-      .card { @apply bg-white rounded-2xl border border-line shadow-[0_1px_2px_rgba(34,28,24,.04),0_12px_32px_-16px_rgba(34,28,24,.10)]; }
-      .btn { @apply inline-flex items-center justify-center gap-2 rounded-lg px-5 py-3 font-semibold transition active:scale-[.98]; }
-      .btn-primary { @apply btn bg-brand-700 text-white hover:bg-brand-800; }
-      .sec { @apply flex items-center gap-2 text-sm font-semibold text-ink mb-3; }
-    }
-  </style>
   <style>
     body { -webkit-font-smoothing: antialiased; }
     .hidden { display: none; }
@@ -34,15 +13,23 @@
     .swal2-styled { border-radius: 10px !important; font-weight: 600 !important; }
     .swal2-html-container { text-align: left !important; line-height: 1.65; font-size: 15px; }
     a { color: #7d1f22; } a:hover { color: #45100f; }
+    a:focus-visible, button:focus-visible, input[type="checkbox"]:focus-visible { outline: 3px solid #d4a84b; outline-offset: 2px; border-radius: 8px; }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; scroll-behavior: auto !important; } }
   </style>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://unpkg.com/lucide@1.73.0/dist/umd/lucide.min.js"></script>
+  <!-- Tailwind (prebuilt) — วางท้าย <head> ให้ลำดับ cascade เหมือน Play CDN เดิม -->
+  <link rel="stylesheet" href="styles.css?v=20261116">
 </head>
 <body class="bg-paper text-ink font-sans min-h-screen flex flex-col">
   <div class="h-1 bg-brand-700"></div>
 
   <main class="flex-1 px-4 py-10">
     <div class="max-w-3xl mx-auto">
+      <!-- [NEW] ลิงก์กลับระบบสมาชิกหลัก -->
+      <a href="https://members.tuswalumni.com/" target="_top" class="inline-flex items-center gap-1.5 text-sm font-semibold no-underline mb-6 hover:underline">
+        <i data-lucide="arrow-left" class="w-4 h-4" aria-hidden="true"></i> กลับหน้าระบบสมาชิก / สมัครสมาชิกใหม่
+      </a>
       <div class="text-center mb-10">
         <img src="https://img2.pic.in.th/cropped_circle_image4abd3ce094449065.png" class="w-20 h-20 mx-auto rounded-full ring-4 ring-white shadow-sm" alt="โลโก้สมาคม">
         <p class="text-[13px] font-semibold text-gold-700 mt-5">สมาคมนักศึกษาเก่าสังคมสงเคราะห์ศาสตร์ มธ.</p>
@@ -54,14 +41,14 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label class="label" for="searchName">ชื่อจริง</label>
-            <input type="text" id="searchName" class="input-field" placeholder="ไม่ต้องใส่คำนำหน้า" onkeydown="if(event.key==='Enter') searchMember()">
+            <input type="text" id="searchName" autocomplete="given-name" class="input-field" placeholder="ไม่ต้องใส่คำนำหน้า" onkeydown="if(event.key==='Enter') searchMember()">
           </div>
           <div>
             <label class="label" for="searchLastname">นามสกุล</label>
-            <input type="text" id="searchLastname" class="input-field" onkeydown="if(event.key==='Enter') searchMember()">
+            <input type="text" id="searchLastname" autocomplete="family-name" class="input-field" onkeydown="if(event.key==='Enter') searchMember()">
           </div>
         </div>
-        <button onclick="searchMember()" class="btn-primary mt-5 w-full"><i data-lucide="search" class="w-4 h-4"></i> ค้นหาข้อมูล</button>
+        <button type="button" onclick="searchMember()" class="btn-primary mt-5 w-full"><i data-lucide="search" class="w-4 h-4"></i> ค้นหาข้อมูล</button>
       </section>
 
       <form id="updateForm" class="hidden card overflow-hidden" onsubmit="event.preventDefault();">
@@ -75,49 +62,49 @@
           <div class="space-y-4">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
-                <label class="label">ประเภทสมาชิก</label>
-                <select name="type" class="input-field">
+                <label class="label" for="upd_type">ประเภทสมาชิก</label>
+                <select id="upd_type" name="type" class="input-field">
                   <option value="สามัญ">สามัญ</option>
                   <option value="สมทบ">สมทบ</option>
                   <option value="กิตติมศักดิ์">กิตติมศักดิ์</option>
                 </select>
               </div>
-              <div><label class="label">คำนำหน้า</label><input type="text" name="prefix" class="input-field"></div>
-              <div><label class="label">ชื่อเล่น</label><input type="text" name="nickname" class="input-field"></div>
+              <div><label class="label" for="upd_prefix">คำนำหน้า</label><input type="text" id="upd_prefix" name="prefix" class="input-field"></div>
+              <div><label class="label" for="upd_nickname">ชื่อเล่น</label><input type="text" id="upd_nickname" name="nickname" class="input-field"></div>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div><label class="label">ชื่อจริง</label><input type="text" name="name" class="input-field font-semibold"></div>
-              <div><label class="label">นามสกุล</label><input type="text" name="lastname" class="input-field font-semibold"></div>
+              <div><label class="label" for="upd_name">ชื่อจริง</label><input type="text" id="upd_name" name="name" class="input-field font-semibold"></div>
+              <div><label class="label" for="upd_lastname">นามสกุล</label><input type="text" id="upd_lastname" name="lastname" class="input-field font-semibold"></div>
             </div>
             <div>
-              <label class="label">เลขบัตรประชาชน (13 หลัก) <span class="text-brand-700">*</span></label>
-              <input type="text" name="idCard" inputmode="numeric" maxlength="13" oninput="this.value = this.value.replace(/[^0-9]/g, '')" class="input-field tracking-[0.15em] text-center font-mono text-lg !bg-gold-50 !border-gold-300" placeholder="0000000000000">
+              <label class="label" for="upd_idCard">เลขบัตรประชาชน (13 หลัก) <span class="text-brand-700">*</span></label>
+              <input type="text" id="upd_idCard" name="idCard" autocomplete="off" inputmode="numeric" maxlength="13" oninput="this.value = this.value.replace(/[^0-9]/g, '')" class="input-field tracking-[0.15em] text-center font-mono text-lg !bg-gold-50 !border-gold-300" placeholder="0000000000000">
             </div>
           </div>
 
           <div class="pt-6 border-t border-line">
             <h3 class="sec"><i data-lucide="graduation-cap" class="w-4 h-4 text-brand-700"></i> ข้อมูลการศึกษา</h3>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-              <input type="text" name="degBachelor" placeholder="ระดับ ป.ตรี (คณะ/สาขา)" class="input-field">
-              <input type="text" name="idBachelor" placeholder="รหัสนศ. ตรี" class="input-field font-mono">
-              <input type="text" name="degMaster" placeholder="ระดับ ป.โท (คณะ/สาขา)" class="input-field">
-              <input type="text" name="idMaster" placeholder="รหัสนศ. โท" class="input-field font-mono">
-              <input type="text" name="degPhD" placeholder="ระดับ ป.เอก (คณะ/สาขา)" class="input-field">
-              <input type="text" name="idPhD" placeholder="รหัสนศ. เอก" class="input-field font-mono">
+              <input type="text" name="degBachelor" aria-label="ระดับ ป.ตรี (คณะ/สาขา)" placeholder="ระดับ ป.ตรี (คณะ/สาขา)" class="input-field">
+              <input type="text" name="idBachelor" aria-label="รหัสนักศึกษา ป.ตรี" placeholder="รหัสนศ. ตรี" class="input-field font-mono">
+              <input type="text" name="degMaster" aria-label="ระดับ ป.โท (คณะ/สาขา)" placeholder="ระดับ ป.โท (คณะ/สาขา)" class="input-field">
+              <input type="text" name="idMaster" aria-label="รหัสนักศึกษา ป.โท" placeholder="รหัสนศ. โท" class="input-field font-mono">
+              <input type="text" name="degPhD" aria-label="ระดับ ป.เอก (คณะ/สาขา)" placeholder="ระดับ ป.เอก (คณะ/สาขา)" class="input-field">
+              <input type="text" name="idPhD" aria-label="รหัสนักศึกษา ป.เอก" placeholder="รหัสนศ. เอก" class="input-field font-mono">
             </div>
           </div>
 
           <div class="pt-6 border-t border-line">
             <h3 class="sec"><i data-lucide="briefcase" class="w-4 h-4 text-brand-700"></i> ข้อมูลติดต่อ & การทำงาน</h3>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3">
-              <input type="email" name="email" placeholder="อีเมล (จำเป็นเพื่อรับผลการยืนยัน) *" class="input-field">
-              <input type="tel" name="phone" placeholder="เบอร์โทรศัพท์" class="input-field">
+              <input type="email" name="email" aria-label="อีเมล (จำเป็น)" autocomplete="email" required placeholder="อีเมล (จำเป็นเพื่อรับผลการยืนยัน) *" class="input-field">
+              <input type="tel" name="phone" aria-label="เบอร์โทรศัพท์" autocomplete="tel-national" inputmode="numeric" placeholder="เบอร์โทรศัพท์" class="input-field">
             </div>
-            <textarea name="address" rows="2" placeholder="ที่อยู่ปัจจุบัน" class="input-field mb-3"></textarea>
+            <textarea name="address" rows="2" aria-label="ที่อยู่ปัจจุบัน" autocomplete="street-address" placeholder="ที่อยู่ปัจจุบัน" class="input-field mb-3"></textarea>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-              <input type="text" name="occupation" placeholder="อาชีพ" class="input-field">
-              <input type="text" name="position" placeholder="ตำแหน่ง" class="input-field">
-              <input type="text" name="workplace" placeholder="สถานที่ทำงาน" class="input-field">
+              <input type="text" name="occupation" aria-label="อาชีพ" placeholder="อาชีพ" class="input-field">
+              <input type="text" name="position" aria-label="ตำแหน่ง" autocomplete="organization-title" placeholder="ตำแหน่ง" class="input-field">
+              <input type="text" name="workplace" aria-label="สถานที่ทำงาน" autocomplete="organization" placeholder="สถานที่ทำงาน" class="input-field">
             </div>
           </div>
 
@@ -135,7 +122,7 @@
   <footer class="bg-ink text-white/70 py-7 px-4 text-center text-sm leading-relaxed">
     <div class="max-w-3xl mx-auto">
       <p>เนื่องจากสมาคมฯ กำลังปรับปรุงระบบฐานข้อมูลใหม่เพื่อแก้ไขข้อมูลที่ไม่ต่อเนื่องในอดีต หากท่านค้นหาชื่อของท่านไม่พบ หรือข้อมูลไม่ครบถ้วน
-        กรุณาติดต่อ <a href="https://www.facebook.com/tuswalumni/" target="_blank" class="!text-gold-300 font-semibold hover:underline inline-flex items-center gap-1"><i data-lucide="facebook" class="w-4 h-4"></i> Facebook page : สมาคมนักศึกษาเก่าสังคมสงเคราะห์ศาสตร์ มธ.</a>
+        กรุณาติดต่อ <a href="https://www.facebook.com/tuswalumni/" target="_blank" rel="noopener" class="!text-gold-300 font-semibold hover:underline inline-flex items-center gap-1"><i data-lucide="message-circle" class="w-4 h-4"></i> Facebook page : สมาคมนักศึกษาเก่าสังคมสงเคราะห์ศาสตร์ มธ.</a>
         เพื่อดำเนินการแก้ไขข้อมูลให้เป็นปัจจุบัน</p>
       <p class="text-white/40 text-xs mt-2">ขออภัยในความไม่สะดวก</p>
     </div>
@@ -162,7 +149,7 @@
               <p class="text-muted">นายทะเบียน</p>
             </div>
             <a href="https://www.facebook.com/tuswalumni/" target="_blank" class="inline-flex items-center gap-2 mt-2 bg-[#1877f2] !text-white py-2 px-5 rounded-lg hover:opacity-90 no-underline font-semibold">
-              <i data-lucide="facebook" class="w-5 h-5"></i><span>ติดต่อ Facebook สมาคมฯ</span>
+              <i data-lucide="message-circle" class="w-5 h-5"></i><span>ติดต่อ Facebook สมาคมฯ</span>
             </a>
           </div>`,
         icon: 'info', width: '650px', confirmButtonText: 'รับทราบ', confirmButtonColor: '#7d1f22',
