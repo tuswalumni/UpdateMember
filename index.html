@@ -67,7 +67,7 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
                 <label class="label" for="upd_type">ประเภทสมาชิก</label>
-                <select id="upd_type" name="type" class="input-field">
+                <select id="upd_type" name="type" disabled title="ประเภทสมาชิกเป็นไปตามข้อมูลเดิมของสมาคมฯ" class="input-field !bg-paper cursor-not-allowed">
                   <option value="สามัญ">สามัญ</option>
                   <option value="สมทบ">สมทบ</option>
                   <option value="กิตติมศักดิ์">กิตติมศักดิ์</option>
@@ -84,9 +84,11 @@
               <label class="label" for="upd_idCard">เลขบัตรประชาชน (13 หลัก) <span class="text-brand-700">*</span></label>
               <input type="text" id="upd_idCard" name="idCard" autocomplete="off" inputmode="numeric" maxlength="13" oninput="this.value = this.value.replace(/[^0-9]/g, '')" class="input-field tracking-[0.15em] text-center font-mono text-lg !bg-gold-50 !border-gold-300" placeholder="0000000000000">
             </div>
+
           </div>
 
           <div class="pt-6 border-t border-line">
+            <p class="text-sm text-muted bg-paper rounded-xl px-4 py-3 mb-4 flex gap-2"><i data-lucide="lock" class="w-4 h-4 mt-0.5 flex-shrink-0" aria-hidden="true"></i><span>เพื่อความปลอดภัยของข้อมูลส่วนบุคคล ระบบจะไม่แสดงข้อมูลเดิมของท่าน — กรอกเฉพาะข้อมูลที่ต้องการอัปเดต <b class="text-ink">ช่องที่เว้นว่างไว้ ระบบจะใช้ข้อมูลเดิมของท่านให้อัตโนมัติ</b></span></p>
             <h3 class="sec"><i data-lucide="graduation-cap" class="w-4 h-4 text-brand-700"></i> ข้อมูลการศึกษา</h3>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
               <input type="text" name="degBachelor" aria-label="ระดับ ป.ตรี (คณะ/สาขา)" placeholder="ระดับ ป.ตรี (คณะ/สาขา)" class="input-field">
@@ -190,33 +192,29 @@
       const f = document.getElementById('updateForm');
       f.classList.remove('hidden');
 
+      f.reset();   // ไม่แสดงข้อมูลเดิม (เซิร์ฟเวอร์ไม่ส่งมาแล้ว) — ช่องว่างจะใช้ข้อมูลเดิมฝั่งเซิร์ฟเวอร์
       f.rowIndex.value = data.rowIndex;
       f.origName.value = data.name || '';
       f.origLastname.value = data.lastname || '';
-      f.origIdCard.value = data.idCard || '';
+      f.origIdCard.value = '';
       f.type.value = data.type || 'สามัญ';
       f.prefix.value = data.prefix || '';
       f.name.value = data.name || '';
       f.lastname.value = data.lastname || '';
-      f.nickname.value = data.nickname || '';
-      f.idCard.value = data.idCard || '';
-      f.degBachelor.value = data.degBachelor || '';
-      f.idBachelor.value = data.idBachelor || '';
-      f.degMaster.value = data.degMaster || '';
-      f.idMaster.value = data.idMaster || '';
-      f.degPhD.value = data.degPhD || '';
-      f.idPhD.value = data.idPhD || '';
-      f.email.value = data.email || '';
-      f.phone.value = data.phone || '';
-      f.address.value = data.address || '';
-      f.occupation.value = data.occupation || '';
-      f.position.value = data.position || '';
-      f.workplace.value = data.workplace || '';
+
+      if (typeof lucide !== 'undefined') lucide.createIcons();
 
       setTimeout(() => {
         const y = f.getBoundingClientRect().top + window.pageYOffset - 16;
         window.scrollTo({ top: y, behavior: 'smooth' });
       }, 100);
+    }
+
+    function isValidThaiId(id) {
+      if (!/^\d{13}$/.test(id)) return false;
+      let sum = 0;
+      for (let i = 0; i < 12; i++) sum += +id[i] * (13 - i);
+      return (11 - (sum % 11)) % 10 === +id[12];
     }
 
     function submitUpdate() {
@@ -227,6 +225,10 @@
       }
       if (form.idCard.value.length !== 13) {
         Swal.fire('ข้อมูลไม่ถูกต้อง', 'เลขบัตรประชาชนต้องมี 13 หลัก', 'warning');
+        return;
+      }
+      if (!isValidThaiId(form.idCard.value)) {
+        Swal.fire('ข้อมูลไม่ถูกต้อง', 'เลขบัตรประชาชนไม่ถูกต้อง กรุณาตรวจสอบอีกครั้ง', 'warning');
         return;
       }
       if (!document.getElementById('pdpaConsent').checked) {
@@ -262,7 +264,8 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
           });
         }).catch(err => {
-          Swal.fire('เกิดข้อผิดพลาด', err.message, 'error');
+          const msg = String((err && err.message) || '').replace(/^(Error:\s*)+/, '').replace(/^เกิดข้อผิดพลาด:\s*/, '');
+          Swal.fire({ icon: 'error', title: 'ยังอัปเดตข้อมูลไม่ได้', text: msg, confirmButtonColor: '#7d1f22' });
         });
       });
     }
